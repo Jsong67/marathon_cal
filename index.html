@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>马拉松配速计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .calculator {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        input {
+            margin: 10px 0;
+            padding: 5px;
+            width: 200px;
+        }
+        select {
+            margin: 10px 0;
+            padding: 5px;
+            width: 200px;
+        }
+        button {
+            padding: 5px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>马拉松配速计算器</h2>
+        <p>请输入您的目标时间（三位数字，例如：130代表1小时30分钟）和选择项目，计算平均配速：</p >
+        
+        <p>项目：  
+            <select id="event" onchange="updateDistance()">
+                <option value="21.0975">半马（21.0975公里）</option>
+                <option value="42.195">全马（42.195公里）</option>
+            </select>
+        </p >
+        
+        <p>总时间（三位数字，例如：130代表1小时30分钟）：<input type="tel" id="total_time" placeholder="例如：130" maxlength="3"></p >
+        <p>距离（公里）：<input type="number" id="distance" readonly></p >
+        
+        <button onclick="calculatePace()">计算配速</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function updateDistance() {
+            const eventSelect = document.getElementById('event');
+            const distanceInput = document.getElementById('distance');
+            distanceInput.value = eventSelect.value;
+        }
+
+        function calculatePace() {
+            const totalTimeInput = document.getElementById('total_time').value;
+            const distance = parseFloat(document.getElementById('distance').value);
+            
+            // 检查输入是否为空或无效
+            if (!totalTimeInput || totalTimeInput.length !== 3) {
+                alert('请填写三位数字的总时间，例如：130表示1小时30分钟');
+                return;
+            }
+
+            // 将输入的三位数分解为小时和分钟
+            const hours = parseInt(totalTimeInput[0]);
+            const minutes = parseInt(totalTimeInput.substring(1, 3));
+            const totalMinutes = hours * 60 + minutes;
+
+            if (distance) {
+                const pace = totalMinutes / distance; // 总时间除以距离，得到分钟每公里
+                const minutesPace = Math.floor(pace);
+                const secondsPace = Math.round((pace - minutesPace) * 60);
+                
+                const result = document.getElementById('result');
+                result.innerHTML = `平均配速：${minutesPace}分${secondsPace}秒每公里`;
+            } else {
+                alert('请填写总时间和选择项目!');
+            }
+        }
+
+        // 初始化时，自动设置距离
+        updateDistance();
+    </script>
+</body>
+</html>
